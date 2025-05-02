@@ -1,0 +1,11 @@
+## Interface: 110105
+## Title: Local Helper
+## Author: DH
+## Version: 1.0
+## Notes: A helper to automate some things
+## SavedVariables: HelperSavedVars
+
+Main.lua
+Ez_Reload.lua
+Show_iLvl.lua
+Sell_Items.lua

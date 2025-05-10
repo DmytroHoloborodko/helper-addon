@@ -10,3 +10,4 @@ Ez_Reload.lua
 Show_iLvl.lua
 Sell_Items.lua
 No_Right_Click.lua
+Summon_Pet.lua

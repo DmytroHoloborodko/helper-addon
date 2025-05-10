@@ -102,6 +102,7 @@ end
 local function OnLogin()
     CreateSettingsFrame()
     CreateMovableReloadUIButton()
+    RightClickLock()
 end
 
 -- Register the PLAYER_LOGIN event to ensure SavedVariables are available

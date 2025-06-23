@@ -80,12 +80,16 @@ local function CreateSettingsFrame()
     return settingsFrame
 end
 
+local addonName, addon = ...
+
 -- Toggle the settings frame when the Addon Compartment button is clicked
 local function OpenSettingsFrame()
-    if HelperSettingsFrame and HelperSettingsFrame:IsShown() then
-        HelperSettingsFrame:Hide()
+    print(addonName)
+    if InterfaceOptionsFrame_OpenToCategory then
+        InterfaceOptionsFrame_OpenToCategory(addonName)
+        InterfaceOptionsFrame_OpenToCategory(addonName)
     else
-        HelperSettingsFrame:Show()
+        Settings.OpenToCategory(addon.settingsCategory.ID)
     end
 end
 
@@ -109,3 +113,60 @@ end
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:SetScript("OnEvent", OnLogin)
+
+-- Create category for Interface Options
+local category = Settings.RegisterVerticalLayoutCategory(addonName)
+
+-- Checkbox: Reload button feature
+do
+    -- RegisterAddOnSetting example. This will read/write the setting directly
+    -- to `HelperSavedVars.showReloadButton`.
+
+    local name = "Enable reload button"
+    local variable = addonName .. "_showReloadButton"
+    local variableKey = "showReloadButton"
+    local variableTbl = HelperSavedVars
+    local defaultValue = HelperSavedVars.showReloadButton or false
+
+    local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue),
+        name, defaultValue)
+
+    setting:SetValueChangedCallback(function(setting, value)
+        if value then
+            ReloadButton_Show() -- Show reload button (from another file)
+        else
+            ReloadButton_Hide() -- Hide reload button (from another file)
+        end
+    end)
+
+    local tooltip = "This is a tooltip for the checkbox."
+    Settings.CreateCheckbox(category, setting, tooltip)
+end
+
+-- Slider: Item Level Threshold
+do
+    local variable = addonName .. "_ItemLevelThreshold"
+    local name = "Item Level Threshold"
+    local defaultValue = 500
+    local minValue = 500
+    local maxValue = 700
+    local step = 10
+
+    local function GetValue()
+        return HelperSavedVars.maxSellItemLevel or defaultValue
+    end
+
+    local function SetValue(value)
+        HelperSavedVars.maxSellItemLevel = value
+    end
+
+    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue,
+        SetValue)
+    local tooltip = "Items below this level will be sold"
+    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+    Settings.CreateSlider(category, setting, options, tooltip)
+end
+
+-- Add filled category to Interface Options
+Settings.RegisterAddOnCategory(category)

@@ -29,7 +29,7 @@ f:SetScript("OnEvent", function()
     -- Move the Queue Status Button
     if QueueStatusButton then
         QueueStatusButton:SetParent(UIParent)
-        QueueStatusButton:ClearAllPoints()
-        QueueStatusButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 40, -15)
+        -- QueueStatusButton:ClearAllPoints()
+        -- QueueStatusButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 40, -15)
     end
 end)

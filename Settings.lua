@@ -96,5 +96,7 @@ function CreateSettingsFrame()
 
     -- Add filled category to Interface Options
     Settings.RegisterAddOnCategory(category)
+    
+    HelperSavedVars.settingsPanelId = category:GetID()
 
 end

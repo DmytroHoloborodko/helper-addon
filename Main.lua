@@ -19,7 +19,7 @@ if AddonCompartmentFrame then
         icon = "Interface\\Icons\\INV_Misc_QuestionMark",
         notCheckable = true,
         func = function()
-            Settings.OpenToCategory(addonName) -- todo: fix
+            Settings.OpenToCategory(HelperSavedVars.settingsPanelId)
         end
     })
 end

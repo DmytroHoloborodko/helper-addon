@@ -1,35 +1,55 @@
-local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript("OnEvent", function()
-    -- Hide Micro Menu (Character, Spellbook, etc.)
+function EnableMenuToggle(showMenu)
+    local show = showMenu or HelperSavedVars.showMenu or false
+
+    -- Toggle Micro Menu
     if MicroMenuContainer then
-        MicroMenuContainer:Hide()
-        MicroMenuContainer.Show = function()
-        end -- Prevent re-showing
+        if show then
+            MicroMenuContainer.Show = nil -- Restore default Show method
+            MicroMenuContainer:Show()
+        else
+            MicroMenuContainer:Hide()
+            MicroMenuContainer.Show = function()
+            end
+        end
     end
 
-    -- Hide Backpack and Bag Slots
+    -- Toggle Bags
     if MainMenuBarBackpackButton then
-        BagBarExpandToggle:Hide()
-        CharacterReagentBag0Slot:Hide()
-        MainMenuBarBackpackButton:Hide()
-        MainMenuBarBackpackButton.Show = function()
-        end
+        if show then
+            BagBarExpandToggle:Show()
+            CharacterReagentBag0Slot:Show()
+            MainMenuBarBackpackButton.Show = nil
+            MainMenuBarBackpackButton:Show()
 
-        for i = 0, 3 do
-            local bag = _G["CharacterBag" .. i .. "Slot"]
-            if bag then
-                bag:Hide()
-                bag.Show = function()
+            for i = 0, 3 do
+                local bag = _G["CharacterBag" .. i .. "Slot"]
+                if bag then
+                    bag.Show = nil
+                    bag:Show()
+                end
+            end
+        else
+            BagBarExpandToggle:Hide()
+            CharacterReagentBag0Slot:Hide()
+            MainMenuBarBackpackButton:Hide()
+            MainMenuBarBackpackButton.Show = function()
+            end
+
+            for i = 0, 3 do
+                local bag = _G["CharacterBag" .. i .. "Slot"]
+                if bag then
+                    bag:Hide()
+                    bag.Show = function()
+                    end
                 end
             end
         end
     end
 
-    -- Move the Queue Status Button
-    if QueueStatusButton then
+    hooksecurefunc(QueueStatusButton, "Show", function()
         QueueStatusButton:SetParent(UIParent)
         QueueStatusButton:ClearAllPoints()
-        QueueStatusButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 40, -15)
-    end
-end)
+        QueueStatusButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 10, 10)
+    end)
+
+end

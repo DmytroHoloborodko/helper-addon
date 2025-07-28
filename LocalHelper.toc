@@ -6,7 +6,8 @@
 ## SavedVariables: HelperSavedVars
 
 Main.lua
-Ez_Reload.lua
+Settings.lua
+Reload_Button.lua
 Show_iLvl.lua
 Sell_Items.lua
 No_Right_Click.lua

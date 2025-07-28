@@ -13,52 +13,52 @@ local function FormatMoney(amount)
     return goldText .. silverText .. copperText
 end
 
-local function CreateSellVendorButton()
-    local vendorButton = CreateFrame("Button", "SellVendorButton", MerchantFrame, "UIPanelButtonTemplate")
+local function CreateSellItemsButton()
+    local vendorButton = CreateFrame("Button", "SellItemsButton", MerchantFrame, "UIPanelButtonTemplate")
 
-    vendorButton:SetSize(100, 30)  -- Width, Height
+    vendorButton:SetSize(100, 30) -- Width, Height
     vendorButton:SetPoint("TOPLEFT", MerchantFrame, "TOPLEFT", 60, -27) -- Position relative to vendor frame
     vendorButton:SetText("Sell items")
 
-    local function SellLowItemLevelItems()
-		local maxItemLevel = HelperSavedVars.maxSellItemLevel or -1
-		
+    vendorButton:SetScript("OnClick", function(self, button)
+        local maxItemLevel = HelperSavedVars.maxSellItemLevel or -1
+        local totalSellPrice = 0
+
         print("|cffffff00Sell items below item level " .. maxItemLevel .. ":|r") -- Yellow text
-		local totalSellPrice = 0
 
         for bag = 0, 3 do
             for slot = 1, C_Container.GetContainerNumSlots(bag) do
                 local itemLink = C_Container.GetContainerItemLink(bag, slot)
-                if itemLink then					
-					local itemQuality = select(3, GetItemInfo(itemLink))
-					local itemLevel = select(4, GetItemInfo(itemLink))
-					local itemPrice = select(11, GetItemInfo(itemLink))
-					
-                    if  itemQuality < ITEM_QUALITY_THRESHOLD and itemLevel < maxItemLevel and itemPrice > 1 then
-						totalSellPrice = totalSellPrice + itemPrice
+                if itemLink then
+                    local itemQuality = select(3, GetItemInfo(itemLink)) or 5
+                    local itemLevel = select(4, GetItemInfo(itemLink)) or maxItemLevel
+                    local itemPrice = select(11, GetItemInfo(itemLink)) or 0
+
+                    if itemQuality < ITEM_QUALITY_THRESHOLD and itemLevel < maxItemLevel and itemPrice > 1 then
+                        totalSellPrice = totalSellPrice + itemPrice
                         print(itemLink .. " |cffaaaaaa(iLvl " .. itemLevel .. ")|r")
-						C_Container.UseContainerItem(bag, slot) -- Sell the item
+                        C_Container.UseContainerItem(bag, slot) -- Sell the item
                     end
                 end
             end
         end
-		
-		if totalSellPrice > 0 then
-			print("|cffffff00Total sell price of eligible items: " .. FormatMoney(totalSellPrice) .. "|r")
-		end
-    end
 
-    -- Add click events for left and right mouse buttons
-    vendorButton:SetScript("OnClick", function(self, button)
-        SellLowItemLevelItems()
+        if totalSellPrice > 0 then
+            print("|cffffff00Total sell price of eligible items: " .. FormatMoney(totalSellPrice) .. "|r")
+        end
     end)
 end
 
--- Hook into the vendor frame when it's opened
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("MERCHANT_SHOW")
-eventFrame:SetScript("OnEvent", function()
-    if not SellVendorButton then -- Prevent duplicate buttons
-        CreateSellVendorButton()
+function EnableSellItemsButton(show)
+    if show then
+        -- Hook into the vendor frame when it's opened
+        local eventFrame = CreateFrame("Frame")
+        eventFrame:RegisterEvent("MERCHANT_SHOW")
+        eventFrame:SetScript("OnEvent", function()
+            -- Prevent duplicate buttons
+            if not SellItemsButton then
+                CreateSellItemsButton()
+            end
+        end)
     end
-end)
+end

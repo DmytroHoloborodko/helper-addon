@@ -1,4 +1,8 @@
 local ITEM_QUALITY_THRESHOLD = 5 -- Legendary
+local ALLOWED_ITEM_TYPES = {
+    ["Armor"] = true,
+    ["Weapon"] = true
+}
 
 -- Function to format gold, silver, and copper
 local function FormatMoney(amount)
@@ -30,14 +34,18 @@ local function CreateSellItemsButton()
             for slot = 1, C_Container.GetContainerNumSlots(bag) do
                 local itemLink = C_Container.GetContainerItemLink(bag, slot)
                 if itemLink then
-                    local itemQuality = select(3, GetItemInfo(itemLink)) or 5
+                    local itemQuality = select(3, GetItemInfo(itemLink)) or ITEM_QUALITY_THRESHOLD
                     local itemLevel = select(4, GetItemInfo(itemLink)) or maxItemLevel
+                    local itemType = select(6, GetItemInfo(itemLink)) or ""
                     local itemPrice = select(11, GetItemInfo(itemLink)) or 0
 
-                    if itemQuality < ITEM_QUALITY_THRESHOLD and itemLevel < maxItemLevel and itemPrice > 1 then
-                        totalSellPrice = totalSellPrice + itemPrice
-                        print(itemLink .. " |cffaaaaaa(iLvl " .. itemLevel .. ")|r")
-                        C_Container.UseContainerItem(bag, slot) -- Sell the item
+                    if ALLOWED_ITEM_TYPES[itemType] 
+                        and itemQuality < ITEM_QUALITY_THRESHOLD 
+                        and itemLevel < maxItemLevel 
+                        and itemPrice > 1 then
+                            totalSellPrice = totalSellPrice + itemPrice
+                            C_Container.UseContainerItem(bag, slot) -- Sell the item
+                            print(itemLink .. " |cffaaaaaa(iLvl " .. itemLevel .. ")|r")
                     end
                 end
             end

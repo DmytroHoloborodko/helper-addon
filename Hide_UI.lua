@@ -46,10 +46,17 @@ function EnableMenuToggle(showMenu)
         end
     end
 
-    hooksecurefunc(QueueStatusButton, "Show", function()
-        QueueStatusButton:SetParent(UIParent)
-        QueueStatusButton:ClearAllPoints()
-        QueueStatusButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 10, 10)
-    end)
+    -- Queue Button Reposition
+    hooksecurefunc(QueueStatusButton, "Show", repositionQueueButton)
 
+    local f = CreateFrame("Frame")
+    f:RegisterEvent("PLAYER_ENTERING_WORLD")
+    f:SetScript("OnEvent", repositionQueueButton)
+
+end
+
+function repositionQueueButton()
+    QueueStatusButton:SetParent(UIParent)
+    QueueStatusButton:ClearAllPoints()
+    QueueStatusButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 0, 0)
 end

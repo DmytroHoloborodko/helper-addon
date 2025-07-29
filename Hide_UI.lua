@@ -49,7 +49,7 @@ function EnableMenuToggle(showMenu)
     hooksecurefunc(QueueStatusButton, "Show", function()
         QueueStatusButton:SetParent(UIParent)
         QueueStatusButton:ClearAllPoints()
-        QueueStatusButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 10, 10)
+        QueueStatusButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 0, 0)
     end)
 
 end

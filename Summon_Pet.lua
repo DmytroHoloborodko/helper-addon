@@ -4,6 +4,7 @@ function EnablePetSummon()
     if HelperSavedVars.summonPet then
         local petListener = CreateFrame("Frame")
         petListener:RegisterEvent("PLAYER_ENTERING_WORLD")
+        petListener:RegisterEvent("CHALLENGE_MODE_START")
         petListener:SetScript("OnEvent", function()
             C_Timer.After(1, function()
                 if IsFlying() then

@@ -1,3 +1,7 @@
+local LSM = LibStub("LibSharedMedia-3.0")
+LSM:Register("statusbar", "Quazii", [[Interface\Addons\SharedMedia_Quazii\texture\Quazii.tga]])
+
+
 local addonName, addon = ...
 
 local frame = CreateFrame("Frame")
